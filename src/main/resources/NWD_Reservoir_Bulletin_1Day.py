@@ -22,7 +22,11 @@ from java.util              import Locale
 from time                   import mktime, localtime
 from subprocess             import Popen
 import java.lang
-import os, sys, inspect, datetime, time, DBAPI, java
+import os, sys, inspect, datetime, time, java
+import traceback
+
+import DBAPI
+
 
 # -------------------------------------------------------------------
 # Import database pathnames and plotting functions
@@ -32,7 +36,9 @@ OsName = java.lang.System.getProperty("os.name").lower()
 print 'OsName = ', OsName
 if OsName[ : 7] == 'windows' : 
     # PC pathnames
-    CronjobsDirectory = "C:\\Users\\G0PDRJAB\\Documents\\cronjobs\\" # Used in the properties file to create pathname for Seals and Symbols
+    #CronjobsDirectory = "C:\\Users\\G0PDRJAB\\Documents\\cronjobs\\" # Used in the properties file to create pathname for Seals and Symbols
+    CronjobsDirectory = "src\\main\\resources\\cronjobs\\"
+
     BulletinsDirectory = CronjobsDirectory + 'Bulletins\\'
     ScriptDirectory = BulletinsDirectory + 'NWD_Reservoir\\'
     BulletinFilename = BulletinsDirectory + 'NWD_Reservoir_Bulletin.pdf'
