@@ -20,6 +20,19 @@
 			<artifactId>jython-db-api</artifactId>
 			<version>9.5.6</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+<!--			the code uses com.itextpdf which is the package fro versiosn 5.0.6 or later -->
+			<version>5.5.13</version>
+<!--			exclude group:'bouncycastle', module:'bcmail-jdk14'-->
+<!--			exclude group:'bouncycastle', module:'bcprov-jdk14'-->
+<!--			exclude group:'bouncycastle', module:'bctsp-jdk14'-->
+		</dependency>
+
+
+
 	</dependencies>
 
 	<repositories>
@@ -30,6 +43,20 @@
 		<repository>
 			<id>cwms-internal</id>
 			<url>https://www.hec.usace.army.mil/nexus/repository/cwms-internal</url>
+		</repository>
+
+<!--		maven central -->
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<url>http://repo1.maven.org/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
 		</repository>
 	</repositories>
 
