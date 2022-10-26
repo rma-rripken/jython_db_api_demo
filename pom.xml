@@ -26,9 +26,41 @@
 			<artifactId>itextpdf</artifactId>
 <!--			the code uses com.itextpdf which is the package fro versiosn 5.0.6 or later -->
 			<version>5.5.13</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcmail-jdk14</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcprov-jdk14</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bctsp-jdk14</artifactId>
+				</exclusion>
+			</exclusions>
 <!--			exclude group:'bouncycastle', module:'bcmail-jdk14'-->
 <!--			exclude group:'bouncycastle', module:'bcprov-jdk14'-->
 <!--			exclude group:'bouncycastle', module:'bctsp-jdk14'-->
+		</dependency>
+
+
+<!--		This needed to be added -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bctls-jdk15to18</artifactId>
+			<version>1.72</version>
+		</dependency>
+
+
+<!--		at mil.army.usace.hec.cwms.radar.client.model.RadarObjectMapper.mapJsonToObject(RadarObjectMapper.java:49)-->
+<!--		at mil.army.usace.hec.cwms.radar.client.controllers.CatalogController.retrieveTimeSeriesCatalog(CatalogController.java:51)-->
+<!--		at wcds.dbi.cwms.radar.CwmsCatalogRadarDao.getTimeSeriesIdentifierCatalog(CwmsCatalogRadarDao.java:107)-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.13.0</version>
 		</dependency>
 
 
