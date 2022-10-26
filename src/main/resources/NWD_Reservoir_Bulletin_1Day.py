@@ -25,7 +25,10 @@ import java.lang
 import os, sys, inspect, datetime, time, java
 import traceback
 
-import DBAPI
+import logging
+logging.basicConfig()
+
+import RADARAPI as DBAPI
 
 
 # -------------------------------------------------------------------
@@ -70,9 +73,10 @@ if ScriptDirectory not in sys.path : sys.path.append(ScriptDirectory)
 while True :
     errorMessage = None
     DatabasePathnamesFile = os.path.join(CronjobsDirectory, "DatabasePathnames.txt")
-    if not os.path.exists(DatabasePathnamesFile) :
+    if not os.path.exists(DatabasePathnamesFile):
         errorMessage = "DatabasePathnames.txt does not exist: %s" % DatabasePathnamesFile
-    with open(DatabasePathnamesFile, "r") as f : exec(f.read())
+    with open(DatabasePathnamesFile, "r") as f:
+        exec(f.read())
     break
 if errorMessage :
     print "ERROR : " + errorMessage
@@ -81,13 +85,13 @@ BulletinProperties = open(BulletinPropertiesPathname, "r"); exec(BulletinPropert
 # Import server utilities
 import Server_Utils
 reload(Server_Utils)
-from Server_Utils import lineNo, outputDebug, retrieveLocationLevel, retrievePublicName
+from Server_Utils import lineNo, outputDebug
 
 #
 # Input
 #
 # Set debug = True to print all debug statements and = False to turn them off
-debug = False
+debug = True
 
 ##################################################################################################################################
 ##################################################################################################################################
@@ -234,6 +238,9 @@ def table1Data( debug,      # Set to True to print all debug statements
             elif data == 'Storage' or data == 'FlowIn' or data == 'FlowTotal' :
                 try :
                     TscPathname = DataBlockDict['DataBlocks'][TableDataName][data] % project
+
+                    outputDebug(debug, lineNo(), 'Calling CwmsDb.get(%s, %s, %s' % (TscPathname, TrimTwStr, EndTwStr))
+
                     # Set the database time zone if not in the specified list
                     if project not in ['FTPK', 'GARR', 'OAHE', 'BEND', 'FTRA', 'GAPT'] :
                         CwmsDb.setTimeZone('Etc/GMT+6')
@@ -334,9 +341,17 @@ try :
         CwmsDb.setTimeWindow(StartTwStr, EndTwStr)
         CwmsDb.setOfficeId('NWDM')
         CwmsDb.setTrimMissing(False)
-        conn = CwmsDb.getConnection()# Create a java.sql.Connection
+
+        outputDebug(debug, lineNo(), 'Getting PathnameList')
         # Get list of pathnames in database
         PathnameList = CwmsDb.getPathnameList()
+        outputDebug(debug, lineNo(), 'Got PathnameList length:', len(PathnameList))
+
+        file=open('PathnameList.txt','w')
+        for items in PathnameList:
+            file.writelines([items])
+
+        file.close()
         
         #
         # Create tables with a finite number of columns that will be written to the pdf file
@@ -351,7 +366,7 @@ try :
         for column in range(Table1Columns) :
             # Column Key
             ColumnKey = 'Column%d' % column
-            
+            print 'ColumnKey = ', ColumnKey
             DataOrder.append(TableLayoutDict['Table1'][ColumnKey]['Key'])
             ColumnWidths.append(TableLayoutDict['Table1'][ColumnKey]['ColumnWidth'])
         Table1.setWidths(ColumnWidths)
@@ -362,6 +377,7 @@ try :
         #
         DataBlocks = ['Data1', 'Data2', 'Data3']
         for DataBlock in DataBlocks :
+            print 'DataBlock = ', DataBlock
             Table1, CsvData = table1Data(debug, Table1, 'Table1', DataBlock, CsvData)
         
         #
@@ -369,6 +385,7 @@ try :
         #
         filenames = [BulletinFilename, ArchiveBulletinFilename % ArchiveDateTimeStr]
         for filename in filenames :
+            print 'Creating: ', filename
             BulletinPdf = Document()
             Writer = PdfWriter.getInstance(BulletinPdf, FileOutputStream(filename))
             BulletinPdf.setPageSize(PageSize.LETTER) # Set the page size
@@ -379,7 +396,7 @@ try :
             BulletinPdf.add(Table1) # Add Table1 to the PDF
             BulletinPdf.close()
             Writer.close()
-            
+            print 'Done: ', filename
         # 
         # Create csv file
         #
@@ -395,8 +412,7 @@ try :
 finally :
     try : CwmsDb.done()
     except : pass
-    try : conn.close()
-    except : pass
+
     try : BulletinPdf.close()
     except : pass
     try : Writer.close()
@@ -407,3 +423,5 @@ finally :
     except : pass
     try : BulletinProperties.close()
     except : pass
+
+print 'Finished'
