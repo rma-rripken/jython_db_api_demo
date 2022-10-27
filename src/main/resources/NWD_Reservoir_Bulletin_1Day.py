@@ -348,8 +348,8 @@ try :
         outputDebug(debug, lineNo(), 'Got PathnameList length:', len(PathnameList))
 
         file=open('PathnameList.txt','w')
-        for items in PathnameList:
-            file.writelines([items])
+        for item in PathnameList:
+            file.writelines(item + '\n')
 
         file.close()
         
