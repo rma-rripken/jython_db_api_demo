@@ -26,10 +26,14 @@ import os, sys, inspect, datetime, time, java
 import traceback
 
 import logging
+
+from OrderedSet import OrderedSet
+
 logging.basicConfig()
 
 import RADARAPI as DBAPI
 
+logger = logging.getLogger(__name__)
 
 # -------------------------------------------------------------------
 # Import database pathnames and plotting functions
@@ -100,6 +104,26 @@ debug = True
 # Functions
 #
 
+def readListFromFile(filename):
+    retval = []
+    with open(filename, 'r') as f:
+        data = f.read()
+        if data:
+            retval = data.split("\n")
+    return retval
+
+def writeListToFile(filename, list):
+    with open(filename, 'w') as f:
+        for item in list:
+            f.writelines(item + '\n')
+
+
+def writeTscToFile(tscId, Tsc):
+    with open(tscId + '.xml', 'w') as f:
+        if Tsc is not None:
+            f.write(Tsc.toXml())
+
+
 #
 # createCell Function   : Creates a PdfPCell for tables
 # Author/Editor         : Ryan Larsen
@@ -169,7 +193,7 @@ def table1Data( debug,      # Set to True to print all debug statements
         TotalColSpan = 0
         
         for data in DataOrder :
-            outputDebug(debug, lineNo(), 'Adding %s to the row' % data)
+            # outputDebug(debug, lineNo(), 'Adding %s to the row' % data)
             # Create a variable within the DataDict. This will allow the user to store all data to a dictionary and access the variables throughout
             #   the script
             DataBlockDict['DataBlocks'][TableDataName].setdefault(project, {}).setdefault(data, None)
@@ -213,7 +237,10 @@ def table1Data( debug,      # Set to True to print all debug statements
             elif data == 'Elevation' :
                 try :
                     if DataBlockDict['DataBlocks'][TableDataName][data] % project in PathnameList :
-                        Tsc = CwmsDb.read(DataBlockDict['DataBlocks'][TableDataName][data] % project).getData()
+                        tscId = DataBlockDict['DataBlocks'][TableDataName][data] % project
+                        outputDebug(debug, lineNo(), 'Calling CwmsDb.read(%s)' % tscId)
+                        Tsc = CwmsDb.read(tscId).getData()
+                        writeTscToFile(tscId, Tsc)
                     else : 
                         raise ValueError
 
@@ -229,7 +256,7 @@ def table1Data( debug,      # Set to True to print all debug statements
                     CellData = Phrase(Chunk(Missing, TextFont))
 
                 # Store value to DataDict
-                outputDebug(debug, lineNo(), 'Set %s %s = ' % (project, data), PrevElev)
+                # outputDebug(debug, lineNo(), 'Set %s %s = ' % (project, data), PrevElev)
                 DataBlockDict['DataBlocks'][TableDataName][project][data] = PrevElev
 
                 # Change default cell properties
@@ -268,7 +295,7 @@ def table1Data( debug,      # Set to True to print all debug statements
                     CellData = Phrase(Chunk(Missing, TextFont))
 
                 # Store value to DataDict
-                outputDebug(debug, lineNo(), 'Set %s %s = ' % (project, data), Value)
+                # outputDebug(debug, lineNo(), 'Set %s %s = ' % (project, data), Value)
                 DataBlockDict['DataBlocks'][TableDataName][project][data] = Value
 
                 # Change default cell properties
@@ -284,12 +311,12 @@ def table1Data( debug,      # Set to True to print all debug statements
             Table.addCell(Cell)
 
             # Add data to CsvData. Break data loop if column span reaches the total number columns before each data piece has been added to that table
-            outputDebug(debug, lineNo(), 'ColSpan = ', ColSpan)
+            # outputDebug(debug, lineNo(), 'ColSpan = ', ColSpan)
             TotalColSpan += ColSpan
             UnformattedData = str(CellData[0]).replace(',', '')
             CsvData += UnformattedData
             CsvData += ','
-            outputDebug(debug, lineNo(), 'TotalColSpan = ', TotalColSpan)
+            # outputDebug(debug, lineNo(), 'TotalColSpan = ', TotalColSpan)
             if TotalColSpan == Table.getNumberOfColumns() :
                 CsvData += '\n'
                 break
@@ -332,27 +359,32 @@ try :
         TimeSinceEpoch      = mktime(TimeObj) # Time object used for ratings
         outputDebug(debug, lineNo(), 'Start of Time Window = ', StartTwStr, '\tEnd of Time Window = ', EndTwStr, 
             '\tProject Date and Time = ', ProjectDateTimeStr, '\tTimeSinceEpoch = ', TimeSinceEpoch)
-        
+
+        office = 'NWDM'
         #
         # Open database connection
         #
-        CwmsDb = DBAPI.open()
+        CwmsDb = DBAPI.open(url="https://cwms-data.usace.army.mil/cwms-data/", office=office)
         CwmsDb.setTimeZone('US/Central')
         CwmsDb.setTimeWindow(StartTwStr, EndTwStr)
-        CwmsDb.setOfficeId('NWDM')
+        CwmsDb.setOfficeId(office)
         CwmsDb.setTrimMissing(False)
 
-        outputDebug(debug, lineNo(), 'Getting PathnameList')
-        # Get list of pathnames in database
-        PathnameList = CwmsDb.getPathnameList()
+        path_cache = "PathnameList-%s.txt" % (office)
+        if os.path.exists(path_cache) :
+            PathnameList = readListFromFile(path_cache)
+        else :
+            outputDebug(debug, lineNo(), 'Getting PathnameList')
+            # Get list of pathnames in database
+            PathnameList = CwmsDb.getPathnameList()
+            if PathnameList is not None and len(PathnameList) > 0 :
+                writeListToFile(path_cache, PathnameList)
+
         outputDebug(debug, lineNo(), 'Got PathnameList length:', len(PathnameList))
+        pathSet = OrderedSet(PathnameList)
+        outputDebug(debug, lineNo(), 'pathSet length:%s' % (len(pathSet)))
 
-        file=open('PathnameList.txt','w')
-        for item in PathnameList:
-            file.writelines(item + '\n')
 
-        file.close()
-        
         #
         # Create tables with a finite number of columns that will be written to the pdf file
         #
@@ -366,7 +398,7 @@ try :
         for column in range(Table1Columns) :
             # Column Key
             ColumnKey = 'Column%d' % column
-            print 'ColumnKey = ', ColumnKey
+            # print 'ColumnKey = ', ColumnKey
             DataOrder.append(TableLayoutDict['Table1'][ColumnKey]['Key'])
             ColumnWidths.append(TableLayoutDict['Table1'][ColumnKey]['ColumnWidth'])
         Table1.setWidths(ColumnWidths)
