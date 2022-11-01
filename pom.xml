@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>mil.army.usace.hec</groupId>
 			<artifactId>jython-db-api</artifactId>
-			<version>9.5.6</version>
+			<version>9.5.9</version>
 		</dependency>
 
 		<dependency>
@@ -71,6 +71,10 @@
 		<repository>
 			<id>maven-public</id>
 			<url>https://www.hec.usace.army.mil/nexus/repository/maven-public</url>
+		</repository>
+		<repository>
+			<id>maven-releases</id>
+			<url>https://www.hec.usace.army.mil/nexus/repository/maven-releases</url>
 		</repository>
 		<repository>
 			<id>cwms-internal</id>
