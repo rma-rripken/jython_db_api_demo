@@ -1,0 +1,8 @@
+office,ts,method,start,end,timezone,type,length,units,firstTime,lastTime
+SWT,TENK.Stor.Inst.1Hour.0.Ccp-Rev,get,15Mar2018 0100,16Mar2018 0000,US/Central,<type 'hec.io.TimeSeriesContainer'>,24,ac-ft,62168880,62170260
+SWT,CHEN.Stor.Inst.1Hour.0.Ccp-Rev,read,,,US/Central,<type 'hec.hecmath.TimeSeriesMath'>,24,ac-ft,62168880,62170260
+SWT,KEYS.Stor.Inst.1Hour.0.Ccp-Rev,get,15Mar2018 0100,16Mar2018 0000,US/Central,<type 'hec.io.TimeSeriesContainer'>,24,ac-ft,62168880,62170260
+SWT,ROBE.Stor.Inst.1Hour.0.Ccp-Rev,get,15Mar2018 0100,16Mar2018 0000,US/Central,<type 'hec.io.TimeSeriesContainer'>,24,ac-ft,62168880,62170260
+SWT,CAME.Flow.Inst.1Hour.0.Ccp-Rev,get,15Mar2018 0100,16Mar2018 0000,Etc/GMT+6,<type 'hec.io.TimeSeriesContainer'>,24,cfs,62168820,62170200
+SWT,CAVE.Flow.Inst.1Hour.0.Ccp-Rev,get,15Mar2018 0100,16Mar2018 0000,US/Central,<type 'hec.io.TimeSeriesContainer'>,24,cfs,62168880,62170260
+SWT,BOIS.Flow.Inst.15Minutes.0.Ccp-Rev,read,,,US/Central,<type 'hec.hecmath.TimeSeriesMath'>,93,cfs,62168880,62170260
