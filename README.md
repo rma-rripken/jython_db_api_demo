@@ -61,3 +61,9 @@ To configure the script to use RADARAPI add "--use-radar --radar-url=http://loca
 
 
 run.bat has an example of how to run the script in a Windows environment.
+
+The file input.csv contains an example input file configured to use SWT and some timeseries from that office.
+The file input_nwdm.csv contains an example input file based on the requests issued by the NWD_Reservoir_Bulletin_1Day.py script.
+The needed timeseries are not available in the national database so it was not possible to test against this file and it is provided as a starting place for tests to be run from a system with access to the NWDM office.
+
+
