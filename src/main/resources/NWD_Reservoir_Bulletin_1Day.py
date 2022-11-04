@@ -35,6 +35,21 @@ import RADARAPI as DBAPI
 
 logger = logging.getLogger(__name__)
 
+
+def readListFromFile(filename):
+    retval = []
+    with open(filename, 'r') as f:
+        data = f.read()
+        if data:
+            retval = data.split("\n")
+    return retval
+
+def writeListToFile(filename, list):
+    with open(filename, 'w') as f:
+        for item in list:
+            f.writelines(item + '\n')
+
+
 # -------------------------------------------------------------------
 # Import database pathnames and plotting functions
 # -------------------------------------------------------------------
@@ -103,25 +118,6 @@ debug = True
 #
 # Functions
 #
-
-def readListFromFile(filename):
-    retval = []
-    with open(filename, 'r') as f:
-        data = f.read()
-        if data:
-            retval = data.split("\n")
-    return retval
-
-def writeListToFile(filename, list):
-    with open(filename, 'w') as f:
-        for item in list:
-            f.writelines(item + '\n')
-
-
-def writeTscToFile(tscId, Tsc):
-    with open(tscId + '.xml', 'w') as f:
-        if Tsc is not None:
-            f.write(Tsc.toXml())
 
 
 #
@@ -240,7 +236,6 @@ def table1Data( debug,      # Set to True to print all debug statements
                         tscId = DataBlockDict['DataBlocks'][TableDataName][data] % project
                         outputDebug(debug, lineNo(), 'Calling CwmsDb.read(%s)' % tscId)
                         Tsc = CwmsDb.read(tscId).getData()
-                        writeTscToFile(tscId, Tsc)
                     else : 
                         raise ValueError
 
