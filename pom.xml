@@ -46,28 +46,47 @@
 		</dependency>
 
 
-<!--		This needed to be added -->
+<!--I've been told this is only for certain versions of jdk 1.8 - if I don't include bctls I see the following-->
+<!--		File "__pyclasspath__/RADARAPI.py", line 1314, in getCatalogedPathnames_1-->
+<!--		File "__pyclasspath__/RADARAPI.py", line 1345, in _getTimeSeriesCatalogIds-->
+<!--		at mil.army.usace.hec.cwms.radar.client.controllers.CatalogController.retrieveTimeSeriesCatalog(CatalogController.java:46)-->
+<!--		at wcds.dbi.cwms.radar.CwmsCatalogRadarDao.getTimeSeriesIdentifierCatalog(CwmsCatalogRadarDao.java:107)-->
+<!--		at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)-->
+<!--		at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)-->
+<!--		at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)-->
+<!--		at java.lang.reflect.Method.invoke(Method.java:498)-->
+<!--		java.lang.NoClassDefFoundError: java.lang.NoClassDefFoundError: org/bouncycastle/jsse/provider/BouncyCastleJsseProvider-->
+
+		<!--&lt;!&ndash;		This needed to be added &ndash;&gt;-->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
-			<artifactId>bctls-jdk15to18</artifactId>
-			<version>1.72</version>
+			<artifactId>bctls-jdk15on</artifactId>
+			<version>1.63</version>
+<!--			<scope>runtime</scope>-->
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.7.32</version>
 		</dependency>
 
 
-<!--		at mil.army.usace.hec.cwms.radar.client.model.RadarObjectMapper.mapJsonToObject(RadarObjectMapper.java:49)-->
-<!--		at mil.army.usace.hec.cwms.radar.client.controllers.CatalogController.retrieveTimeSeriesCatalog(CatalogController.java:51)-->
-<!--		at wcds.dbi.cwms.radar.CwmsCatalogRadarDao.getTimeSeriesIdentifierCatalog(CwmsCatalogRadarDao.java:107)-->
+<!--&lt;!&ndash;		at mil.army.usace.hec.cwms.radar.client.model.RadarObjectMapper.mapJsonToObject(RadarObjectMapper.java:49)&ndash;&gt;-->
+<!--&lt;!&ndash;		at mil.army.usace.hec.cwms.radar.client.controllers.CatalogController.retrieveTimeSeriesCatalog(CatalogController.java:51)&ndash;&gt;-->
+<!--&lt;!&ndash;		at wcds.dbi.cwms.radar.CwmsCatalogRadarDao.getTimeSeriesIdentifierCatalog(CwmsCatalogRadarDao.java:107)&ndash;&gt;-->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.13.0</version>
+			<scope>runtime</scope>
 		</dependency>
-
 
 
 	</dependencies>
 
 	<repositories>
+
 		<repository>
 			<id>maven-public</id>
 			<url>https://www.hec.usace.army.mil/nexus/repository/maven-public</url>
