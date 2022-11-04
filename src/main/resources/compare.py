@@ -116,13 +116,16 @@ def capture(infile, outfile, use_radar, radar_url, cache_pathnames):
 	if cache_pathnames:
 		path_cache = "pathnames-%s.txt" % (office)
 		if os.path.exists(path_cache):
+			logger.info("Skipping the pathname fetch because %s exists" % (path_cache))
 			pathnames = read_list(path_cache)
 		else:
 			# Get list of pathnames in database
+			logger.info("Requesting pathnames.")
 			pathnames = cwms_db.getPathnameList()
 			if pathnames is not None and len(pathnames) > 0:
 				write_list(path_cache, pathnames)
 	else:
+		logger.info("Requesting pathnames")
 		pathnames = cwms_db.getPathnameList()
 	
 	logger.info('Got pathnames length:%s' % (len(pathnames)))

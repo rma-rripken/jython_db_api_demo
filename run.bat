@@ -13,9 +13,11 @@ set JVM_OPTS=%JVM_OPTS% -Djava.util.logging.config.file=logging.properties
 
 set MAIN_CLASS=org.python.util.jython
 set JYTHON_SCRIPT=%PROJ_DIR%src\main\resources\compare.py
-set ARGS= --radar-url=http://localhost:7000/swt-data/ --cache-pathnames
+:: set ARGS= --radar-url=http://localhost:7000/swt-data/ --cache-pathnames
+set ARGS=
 
-call "C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.2\plugins\maven\lib\maven3\bin\mvn" dependency:copy-dependencies
+call mvn dependency:copy-dependencies
+:: call "C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.2\plugins\maven\lib\maven3\bin\mvn" dependency:copy-dependencies
 
 "%JAVA_HOME%\bin\java.exe" %JVM_OPTS% -cp "%CP%" %MAIN_CLASS% %JYTHON_SCRIPT% %ARGS%
 
