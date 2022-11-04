@@ -144,7 +144,7 @@ def capture(infile, outfile, use_radar, radar_url, cache_pathnames):
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Collect CWMS data and compare to expected results.')
-	parser.add_argument('--use-radar', action='store_true', help='Use RADAR API instead of DBAPI', default=True)
+	parser.add_argument('--use-radar', action='store_true', help='Use RADAR API instead of DBAPI', default=False)
 	parser.add_argument('--cache-pathnames', action='store_true', help='Potentially skip the pathname retrieve', default=False)
 	parser.add_argument('--radar-url', help='The url to the Radar server.', default="https://cwms-data.usace.army.mil/cwms-data/")
 	parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
